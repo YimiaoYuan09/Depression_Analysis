@@ -41,11 +41,11 @@ simulate_pet_data <-
       TRUE ~ NA
     ),
     age = case_when(
-      age < 25 ~ "<25 years",
+      age < 25 ~ "less than 25 years",
       age <= 35 ~ "25-35 years",
       age <= 45 ~ "35-45 years",
       age <= 55 ~ "45-55 years",
-      TRUE ~ ">55 years"
+      TRUE ~ "greater than 55 years"
     ),
     gender = if_else(gender == 0, "male", "female"),
     income = case_when(
