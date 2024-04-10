@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Cleans the raw pet owners and non-pet onwers data
+# Purpose: Cleans the raw pet owners and non-pet owners data
 # Author: Yimiao Yuan
 # Date: 08 April 2024
 # Contact: yymlinda.yuan@mail.utoronto.ca
@@ -30,11 +30,11 @@ clean_pet_data <-
   mutate(
     pet_group = if_else(pet_group == 0, "pet owners", "non-pet owners"),
     age_group = case_when(
-      age_group == 0 ~ "less than 15 years",
-      age_group == 1 ~ "15-25 years",
-      age_group == 2 ~ "26-35 years",
-      age_group == 3 ~ "36-45 years",
-      age_group == 4 ~ "greater than 46 years"
+      age_group == 1 ~ "less than 15 years",
+      age_group == 2 ~ "15-25 years",
+      age_group == 3 ~ "26-35 years",
+      age_group == 4 ~ "36-45 years",
+      age_group == 5 ~ "greater than 46 years"
     ),
     gender = if_else(gender == 0, "male", "female"),
     bmi_status = case_when(
