@@ -1,0 +1,375 @@
+---
+title: "My title"
+subtitle: "My subtitle if needed"
+author: 
+  - Yimiao Yuan
+thanks: "Code and data are available at: https://github.com/YimiaoYuan09/Pet_Ownership_Impact"
+date: today
+date-format: long
+abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+format: pdf
+toc: true
+number-sections: true
+bibliography: references.bib
+---
+
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(here)
+library(haven)
+library(knitr)
+library(arrow)
+```
+
+
+# Introduction
+
+You can and should cross-reference sections and sub-sections. We use @citeR and @rohan.
+
+The remainder of this paper is structured as follows. @sec-data....
+
+
+
+# Data {#sec-data}
+
+## Data Source
+
+
+## Features
+
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+
+# read in raw data
+raw_pet_data <-  read_sav(here::here("data/raw_data/raw_data.sav"))
+```
+
+```{r}
+#| label: tbl-raw
+#| tbl-cap: "Preview of the raw pet owners and non-pet owners dataset"
+#| message: false
+#| echo: false
+
+raw_pet_data[1:5, 1:8] |>
+  kable()
+raw_pet_data[1:5, 9:15] |>
+  kable()
+raw_pet_data[1:5, 16:19] |>
+  kable()
+```
+
+## Methodology
+
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+
+# read in cleaned data
+pet_data <-
+  read_parquet(here::here("data/analysis_data/clean_pet_data.parquet"))
+```
+
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+
+# change column type to factor
+pet_data <-
+  pet_data |>
+  mutate(
+    pet_group = factor(
+      pet_group,
+      levels = c(
+        "non-pet owners", 
+        "pet owners"
+      )
+    ),
+    age_group = factor(
+      age_group,
+      levels = c(
+        "less than 15 years",
+        "15-25 years",
+        "26-35 years",
+        "36-45 years",
+        "46-55 years",
+        "greater than 56 years"
+      )
+    ),
+    gender = factor(
+      gender,
+      levels = c(
+        "male",
+        "female"
+      )
+    ),
+    bmi_status = factor(
+      bmi_status,
+      levels = c(
+        "under weight",
+        "normal weight",
+        "over weight",
+        "obese"
+      )
+    ),
+    depression_status = factor(
+      depression_status,
+      levels = c(
+        "depressed",
+        "non-depressed"
+      )
+    ),
+    pet_type = factor(
+      pet_type,
+      levels = c(
+        "dog",
+        "cat",
+        "bird",
+        "rabbit",
+        "dog, cat",
+        "dog, bird",
+        "dog, cat, bird, rabbit",
+        "cat, bird",
+        "cat, bird, rabbit"
+      )
+    )
+  ) |>
+  select(pet_group, age_group, gender, bmi_status, depression_status, pet_type)
+```
+
+```{r}
+#| label: tbl-clean-data
+#| tbl-cap: "Preview of the cleaned pet owners and non-pet owners dataset"
+#| message: false
+#| echo: false
+
+pet_data[1:5, 1:6] |>
+  kable()
+```
+
+```{r}
+#| label: tbl-summary
+#| tbl-cap: "Statistics summary of the cleaned pet owners and non-pet owners dataset"
+#| message: false
+#| echo: false
+
+pet_data |>
+  summary() |>
+  kable()
+```
+
+
+## Data Analysis
+```{r}
+#| label: fig-pet-type
+#| fig-cap: The distribution of pet species
+#| echo: false
+#| warning: false
+#| message: false
+pet_data |>
+  filter(pet_group == "pet owners") |>
+  ggplot(aes(x = pet_type)) +
+  coord_flip() +
+  geom_bar(position = "dodge") +
+  theme_minimal() +
+  labs(
+    x = "Type of pets",
+    y = "Number of respondents"
+  )
+```
+
+```{r}
+#| label: fig-bmi
+#| fig-cap: The relationship between BMI status and pet ownership by gender
+#| echo: false
+#| warning: false
+#| message: false
+pet_data |>
+  ggplot(aes(x = bmi_status, fill = pet_group)) +
+  geom_bar(position = "dodge") +
+  facet_wrap(facets = vars(gender)) +
+  theme_minimal() +
+  coord_flip() +
+  scale_fill_brewer(palette = "Set1") +
+  labs(
+    x = "BMI Status",
+    y = "Number of respondents",
+    fill = "Group"
+  )+
+  theme(legend.position = "bottom")
+```
+
+```{r}
+#| label: fig-depression
+#| fig-cap: The relationship between depression status and pet ownership by age group
+#| echo: false
+#| warning: false
+#| message: false
+pet_data |>
+  ggplot(aes(x = depression_status, fill = pet_group)) +
+  geom_bar(position = "dodge") +
+  facet_wrap(facets = vars(age_group)) +
+  theme_minimal() +
+  coord_flip() +
+  scale_fill_brewer(palette = "Set1") +
+  labs(
+    x = "Depression status",
+    y = "Number of respondents",
+    fill = "Group"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+
+# Model
+
+The goal of our modelling strategy is twofold. Firstly,...
+
+Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
+
+## Model set-up
+
+Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
+
+\begin{align} 
+y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
+\mu_i &= \alpha + \beta_i + \gamma_i\\
+\alpha &\sim \mbox{Normal}(0, 2.5) \\
+\beta &\sim \mbox{Normal}(0, 2.5) \\
+\gamma &\sim \mbox{Normal}(0, 2.5) \\
+\sigma &\sim \mbox{Exponential}(1)
+\end{align}
+
+We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
+
+
+### Model justification
+
+We expect a positive relationship between the size of the wings and time spent aloft. In particular...
+
+We can use maths by including latex between dollar signs, for instance $\theta$.
+
+
+# Results
+
+Our results are summarized in @tbl-modelresults.
+
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+
+library(rstanarm)
+
+first_model <-
+  readRDS(file = here::here("models/first_model.rds"))
+```
+
+```{r}
+#| echo: false
+#| eval: true
+#| label: tbl-modelresults
+#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
+#| warning: false
+
+modelsummary::modelsummary(
+  list(
+    "First model" = first_model
+  ),
+  statistic = "mad",
+  fmt = 2
+)
+```
+
+
+
+
+# Discussion
+
+## First discussion point {#sec-first-point}
+
+If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
+
+## Second discussion point
+
+## Third discussion point
+
+## Weaknesses and next steps
+
+Weaknesses and next steps should also be included.
+
+\newpage
+
+\appendix
+
+# Appendix {-}
+
+
+# Additional data details
+
+# Model details {#sec-model-details}
+
+## Posterior predictive check
+
+In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows...
+
+In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
+
+```{r}
+#| eval: true
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-ppcheckandposteriorvsprior
+#| layout-ncol: 2
+#| fig-cap: "Examining how the model fits, and is affected by, the data"
+#| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
+
+# pp_check(first_model) +
+#   theme_classic() +
+#   theme(legend.position = "bottom")
+# 
+# posterior_vs_prior(first_model) +
+#   theme_minimal() +
+#   scale_color_brewer(palette = "Set1") +
+#   theme(legend.position = "bottom") +
+#   coord_flip()
+```
+
+## Diagnostics
+
+@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
+
+@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
+
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: fig-stanareyouokay
+#| fig-cap: "Checking the convergence of the MCMC algorithm"
+#| fig-subcap: ["Trace plot", "Rhat plot"]
+#| layout-ncol: 2
+
+# plot(first_model, "trace")
+# 
+# plot(first_model, "rhat")
+```
+
+
+
+\newpage
+
+
+# References
+
+
