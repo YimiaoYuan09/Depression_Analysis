@@ -48,7 +48,8 @@ correct_age_group <-
     "15-25 years",
     "26-35 years",
     "36-45 years",
-    "greater than 46 years"
+    "46-55 years",
+    "greater than 56 years"
     )
 
 if (all(cleaned_pet_data$age_group |>
@@ -104,6 +105,7 @@ if (all(cleaned_pet_data$depression_status |>
 
 # pet_type
 # NA for non pet owners
+# no respondents has cat+rabbit or others as type of pets
 correct_pet_type <- 
   c(
     "dog",

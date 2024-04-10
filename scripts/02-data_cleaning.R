@@ -30,11 +30,12 @@ clean_pet_data <-
   mutate(
     pet_group = if_else(pet_group == 0, "pet owners", "non-pet owners"),
     age_group = case_when(
-      age_group == 1 ~ "less than 15 years",
-      age_group == 2 ~ "15-25 years",
-      age_group == 3 ~ "26-35 years",
-      age_group == 4 ~ "36-45 years",
-      age_group == 5 ~ "greater than 46 years"
+      age_group == 0 ~ "less than 15 years",
+      age_group == 1 ~ "15-25 years",
+      age_group == 2 ~ "26-35 years",
+      age_group == 3 ~ "36-45 years",
+      age_group == 4 ~ "46-55 years",
+      age_group == 5 ~ "greater than 56 years"
     ),
     gender = if_else(gender == 0, "male", "female"),
     bmi_status = case_when(
@@ -53,7 +54,9 @@ clean_pet_data <-
       pet_type == 5 ~ "dog, bird",
       pet_type == 6 ~ "dog, cat, bird, rabbit",
       pet_type == 7 ~ "cat, bird",
-      pet_type == 8 ~ "cat, bird, rabbit"
+      pet_type == 8 ~ "cat, bird, rabbit",
+      pet_type == 9 ~ "bird, rabbit",
+      pet_type == 10 ~ "others"
     )
   ) |>
   select(pet_group, age_group, gender, bmi_status, depression_status, pet_type)
