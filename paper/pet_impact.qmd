@@ -23,6 +23,7 @@ library(here)
 library(haven)
 library(knitr)
 library(arrow)
+library(kableExtra)
 ```
 
 
@@ -37,9 +38,48 @@ The remainder of this paper is structured as follows. @sec-data....
 # Data {#sec-data}
 
 ## Data Source
-
+In this report, I use data from a cross-sectional study of pet owners and non-pet owners in Bangladesh in 2020 as the primary dataset. The dataset uses both online and offline methods to collect data. The questionnaire was divided into two main sections including socio-demographic questions and depression assessment. The first section asked participants about their place of residence, age, gender, height, weight, lifestyle habits, pet ownership and other questions. The second part used the Patient Health Questionnaire 9 (PHQ-9) depression scale to measure depression. The PHQ-9 is scored according to the Primary Care Evaluation of Mental Disorders Patient Health Questionnaire (PRIME-MD PHQ), and is a reliable and accurate measure of the severity and significance of depression. A total of 280 responses were recorded in the dataset, including 140 pet owners and 140 non-pet owners.
 
 ## Features
+The original pet owners and non-pet owners dataset, which shows in @tbl-raw, contains 280 responses and 19 variables.
+
+1. id: the sequential serial number.
+
+2. Group: the group of the respondent; numeric numbers starting from 0 correspond to options "Pet Owners" and "Non-Pet Owners" respectively.
+
+3. Agegroup: the age group of the respondent; numeric numbers starting from 0 correspond to options "Less than 15 Years", "15-25 Years", "26-35 Years", "36-45 Years", "46-55 Years", and "Greater than 56 Years", respectively.
+
+4. Gender: the gender of the respondent; numeric numbers starting from 0 correspond to options "Male" and "Female" respectively.
+
+5. Marital: the marital status of the respondent; numeric numbers starting from 0 correspond to options "Married", "Unmarried", "Divorced", and "Widowed", respectively.
+
+6. BMIStatus: the nutritional status of the respondent based on Body Mass Index (BMI); numeric numbers starting from 0 correspond to options "Under Weight", "Normal Weight", "Over Weight", and "Obese", respectively.
+
+7. IncomeGroup: the respondent's average monthly family income in Bangladeshi Taka (BDT); numeric numbers starting from 0 correspond to options "Less than 60000 BDT" and "Greater than 60000 BDT" respectively.
+
+8. Occupation: the respondent's occupation; numeric numbers starting from 0 correspond to options "Job Holder", "Business", "Homemaker", and "Others", respectively.
+
+9. Religion: the respondent's religion; numeric numbers starting from 0 correspond to options "Islam" and "Others" respectively.
+
+10. Education: the education level of the respondent; numeric numbers starting from 0 correspond to options "Greater than 12 Years Schooling" and "Less than 12 Years Schooling" respectively.
+
+11. Tobacco: whether the respondent is a smoker; numeric numbers starting from 0 correspond to options "Yes" and "No" respectively.
+
+12. Alcohol: whether the respondent drinks alcohol; numeric numbers starting from 0 correspond to options "Yes" and "No" respectively.
+
+13. Disability: the physical disability status of the respondent; numeric numbers starting from 0 correspond to options "Yes" and "No" respectively.
+
+14. phqtotal: the total PHQ-9 Score of the respondent.
+
+15. Depressionstatus: the depression status of the respondent; numeric numbers starting from 0 correspond to options "Depressed" and "Non-depressed" respectively.
+
+16. DifficultyofWorking: the respondent's difficulty in working, taking care of things or getting along with people with respect to PHQ-9 responses; numeric numbers starting from 0 correspond to options "Difficult" and "Not Difficult" respectively.
+
+17. Typeofpet: the type of pets owned by respondent; numeric numbers starting from 0 correspond to options "Dog", "Cat", "Bird", "Rabbit", "Dog and Cat", "Dog and Bird", "Dog, Cat, Bird and Rabbit", "Cat and Bird", "Cat, Bird and Rabbit", "Bird and Rabbit", and "Others", respectively.
+
+18. MonthGroupofhavingPets: the amount of time pet owners spend living with their pets; numeric numbers starting from 0 correspond to options "Less than 75 Months" and "Greater than 75 Months" respectively.
+
+19. Purposeofpets: the purpose of pet owners living with their pets; numeric numbers starting from 0 correspond to options "Companion/Friend" and "Others" respectively.
 
 ```{r}
 #| include: false
@@ -57,12 +97,16 @@ raw_pet_data <-  read_sav(here::here("data/raw_data/raw_data.sav"))
 #| echo: false
 
 raw_pet_data[1:5, 1:8] |>
-  kable()
+  kable(align = 'c')
 raw_pet_data[1:5, 9:15] |>
-  kable()
+  kable(align = 'c')
 raw_pet_data[1:5, 16:19] |>
-  kable()
+  kable(align = 'c')
 ```
+
+## Data Measurement
+.............Todo..........
+
 
 ## Methodology
 
@@ -162,7 +206,8 @@ pet_data[1:5, 1:6] |>
 
 pet_data |>
   summary() |>
-  kable()
+  kable() |>
+  kable_styling(font_size = 8)
 ```
 
 
@@ -239,22 +284,24 @@ Here we briefly describe the Bayesian analysis model used to investigate... Back
 Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
 
 \begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
+y_i|\pi_i &\sim \mbox{Bern}(\pi_i) \\
+\mbox{logit}(\pi_i) &= \alpha + \beta_1 \times \mbox{pet ownership}_i + \beta_2 \times \mbox{age}_i + \beta_3 \times \mbox{BMI}_i\\
 \alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
+\beta_1 &\sim \mbox{Normal}(0, 2.5) \\
+\beta_2 &\sim \mbox{Normal}(0, 2.5)
 \end{align}
 
 We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
 
 
-### Model justification
+## Model Justification
 
 We expect a positive relationship between the size of the wings and time spent aloft. In particular...
 
 We can use maths by including latex between dollar signs, for instance $\theta$.
+
+
+## Model Implication
 
 
 # Results
@@ -269,8 +316,8 @@ Our results are summarized in @tbl-modelresults.
 
 library(rstanarm)
 
-first_model <-
-  readRDS(file = here::here("models/first_model.rds"))
+depression_model <-
+  readRDS(file = here::here("models/depression_model.rds"))
 ```
 
 ```{r}
@@ -282,7 +329,7 @@ first_model <-
 
 modelsummary::modelsummary(
   list(
-    "First model" = first_model
+    "First model" = depression_model
   ),
   statistic = "mad",
   fmt = 2
