@@ -109,6 +109,9 @@ raw_pet_data[1:5, 16:19] |>
 
 
 ## Methodology
+Since it is difficult to observe through many variables, this report will only explore and analyze through specific aspects. The original dataset contains demographic information about the respondents as well as health level and depression status. This report will only model and discuss the relationship between depression status and pet ownership, respondent's age, and respondent's BMI status. Other columns such as gender and pet type will also be kept in this report to explore some interesting relationships between the variables.
+
+The dataset is cleaned by renaming the column names, selecting target columns, specifying the class of the columns, and changing the numbers in the table to corresponding description in the codebook to improve the redability. After the cleaning process, 280 rows and 6 variables remain. @tbl-clean-data shows a preview of the cleaned dataset.
 
 ```{r}
 #| include: false
@@ -197,6 +200,7 @@ pet_data <-
 pet_data[1:5, 1:6] |>
   kable()
 ```
+@tbl-summary is a summary of the cleaned data, showing detailed statistics about the dataset. According to this table, we can see that the majority of the respondents are young adults, aged between 15 to 35 years. In this dataset, a higher percentage of these respondents are female. Furthermore, within the subset of respondents who reported pet ownership, a significant majority expressed a preference for owning cats.
 
 ```{r}
 #| label: tbl-summary
@@ -212,6 +216,7 @@ pet_data |>
 
 
 ## Data Analysis
+@fig-pet-type illustrates the distribution of different types of pets among respondents who identify as pet owners. From this graph, we can see that most of the respondents preferred to keep cats, with nearly 100 people, and only a small amount of people had more than two pets in their homes. In addition to cats, most people would choose to keep dogs or keep dogs and cats together to add some energy or enthusiasm to their homes.
 ```{r}
 #| label: fig-pet-type
 #| fig-cap: The distribution of pet species
@@ -230,6 +235,7 @@ pet_data |>
   )
 ```
 
+@fig-bmi shows the relationship between BMI status, pet ownership, and gender among respondents. As we can see from the graph, most respondents have normal weight, some are over weight, and only a small amount of people are falling into extreme categories, either under weight or obese. It is interesting to see that for women, there are more pet owners with normal weight than non-pet owners. However, the situation is different for men, as there are more normal weight non-pet owners than pet owners. Overall, pet owners tend to have a healthier weight compared to non-pet owners.
 ```{r}
 #| label: fig-bmi
 #| fig-cap: The relationship between BMI status and pet ownership by gender
@@ -251,6 +257,7 @@ pet_data |>
   theme(legend.position = "bottom")
 ```
 
+@fig-depression shows the relationship between depression status, pet ownership and age. As can be seen from the graph, the majority of respondents are between the ages of 15 and 35. Among respondents over the age of 36, the presence or absence of a pet have no significant effect on depression. However, for young people, pets seem to have a greater impact, especially in the 15 to 25 age group. The presence and companionship of pets reduces the number of depressed people.
 ```{r}
 #| label: fig-depression
 #| fig-cap: The relationship between depression status and pet ownership by age group
@@ -275,23 +282,27 @@ pet_data |>
 
 # Model
 
-The goal of our modelling strategy is twofold. Firstly,...
-
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
-
 ## Model set-up
 
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
+In this report, we use the Bayesian logistic regression model to analysis and examine the relationship between depression status and pet ownership, along with various demographic factors. The model is formulated as follows:
 
 \begin{align} 
 y_i|\pi_i &\sim \mbox{Bern}(\pi_i) \\
-\mbox{logit}(\pi_i) &= \alpha + \beta_1 \times \mbox{pet ownership}_i + \beta_2 \times \mbox{age}_i + \beta_3 \times \mbox{BMI}_i\\
+\mbox{logit}(\pi_i) &= \alpha + \beta_1 \times \mbox{pet ownership}_i + \beta_2 \times \mbox{age}_i + \beta_3 \times \mbox{BMI status}_i\\
 \alpha &\sim \mbox{Normal}(0, 2.5) \\
 \beta_1 &\sim \mbox{Normal}(0, 2.5) \\
 \beta_2 &\sim \mbox{Normal}(0, 2.5)
 \end{align}
 
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
+In this model, $y_i$ represents the binary outcome variable indicating whether an individual is experiencing depression. The likelihood of depression ($\pi_i$) is captured through a logistic link function (\text{logit}($\pi_i$)), which comprises a linear combination of the intercept ($\alpha$) and the coefficients ($\beta_1$, $\beta_2$, $\beta_3$)) corresponding to the predictor variables such as pet ownership, age, and BMI status. These predictor variables are denoted as \text{race}_i, \text{region}_i, and \text{employ}_i, where $i$ indexes the individuals in the dataset.
+
+Informative prior distributions are assigned to the intercept ($\alpha$) and coefficients ($\beta_1$, $\beta_2$, $\beta_3$) to regularize the model. More specifically, we use a normal distribution with a mean of 0 and a standard deviation of 2.5 for each parameter. Additionally, enabling parameter autoscaling is employed to enhance the model's performance.
+
+There are several reasons for choosing this model. Firstly, logistic regression is suited for binary outcome variables, hence it can be used to analyze depression status. Additionally, the utilization of Bayesian methods allows us to integrate prior knowledge and uncertainty into our analysis, resulting in more resilient estimations of the model parameters. Furthermore, by assigning prior distributions, Bayesian models can subtly tune the estimation procedure to reduce the risk of overfitting and improve the performance. 
+
+We also considered other modeling methods, such as linear regression model. However, we chose the Bayesian logistic regression model since the depression status is a binary variable.
+
+We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`. Rstanarm uses Markov chain Monte Carlo (MCMC) methods to estimate the posterior distribution of the parameters. Supplementary materials, such as convergence assessments and posterior summaries, can be found in Appendix @sec-model-details.
 
 
 ## Model Justification
@@ -300,8 +311,11 @@ We expect a positive relationship between the size of the wings and time spent a
 
 We can use maths by including latex between dollar signs, for instance $\theta$.
 
+...........todo...........
+
 
 ## Model Implication
+..........todo.................
 
 
 # Results
@@ -329,7 +343,7 @@ depression_model <-
 
 modelsummary::modelsummary(
   list(
-    "First model" = depression_model
+    "Not Depressed" = depression_model
   ),
   statistic = "mad",
   fmt = 2
@@ -341,17 +355,25 @@ modelsummary::modelsummary(
 
 # Discussion
 
-## First discussion point {#sec-first-point}
+## Influence of Pet Ownership on Mental Health
 
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
+In Bangladesh, the levels of depression, anxiety, and stress has been reported to be as high as 54.3%, 64.8%, and 59.0%, respectively [@Arusha_Biswas_2020]. Depression is not an unfamiliar word in today's society. On the contrary, more and more people are suffering from depression, while the age of the sufferers is starting to get progressively younger. According to statistics, in Bangladesh, 14% of young people aged 15 to 24 often feel depressed or have little interest in doing things [@Hossain_2021]. 
 
-## Second discussion point
+As people gain a deeper understanding of depression, more and more individuals are starting to pay attention to mental health, and extensive research is also beginning to explore methods for treating and preventing depression. In our analysis, the model supports that people who own pets are less likely to suffer from depression than those who do not own pets. There are also studies that show an association between pet ownership and lower levels of depression.
+
+Pets can reduce stress, anxiety and depression, ease loneliness, encourage exercise and play, and even improve cardiovascular health. For example, birds can encourage social interaction and help keep your mind sharp. Even watching fish in an aquarium can help people reduce muscle tension and lower pulse rate [@Robinson_Segal_2024].
+
+In a U.S. research study, approximately 86% of pet owners reported that their pets had a positive impact on their mental health [@Connors_2023]. For pet-owning families, pets are not just animals. They are more like family members, an integral part of the household. Their presence can bring joy to your life and provide companionship during times of sadness and despair. While pets may only be a small part of your life, for them, you are their entire world. They are your concern and worry when you contemplate ending your life, and they also give you the courage to keep going.
+
+
+## Relationship between Physical Health and Depression
 
 ## Third discussion point
 
-## Weaknesses and next steps
+## Weaknesses and future steps
 
 Weaknesses and next steps should also be included.
+
 
 \newpage
 
@@ -380,11 +402,11 @@ In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. Th
 #| fig-cap: "Examining how the model fits, and is affected by, the data"
 #| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
 
-# pp_check(first_model) +
-#   theme_classic() +
-#   theme(legend.position = "bottom")
-# 
-# posterior_vs_prior(first_model) +
+pp_check(depression_model) +
+  theme_classic() +
+  theme(legend.position = "bottom")
+
+# posterior_vs_prior(depression_model) +
 #   theme_minimal() +
 #   scale_color_brewer(palette = "Set1") +
 #   theme(legend.position = "bottom") +
@@ -407,9 +429,9 @@ In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. Th
 #| fig-subcap: ["Trace plot", "Rhat plot"]
 #| layout-ncol: 2
 
-# plot(first_model, "trace")
-# 
-# plot(first_model, "rhat")
+plot(depression_model, "trace")
+
+plot(depression_model, "rhat")
 ```
 
 
