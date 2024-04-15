@@ -294,7 +294,7 @@ y_i|\pi_i &\sim \mbox{Bern}(\pi_i) \\
 \beta_2 &\sim \mbox{Normal}(0, 2.5)
 \end{align}
 
-In this model, $y_i$ represents the binary outcome variable indicating whether an individual is experiencing depression. The likelihood of depression ($\pi_i$) is captured through a logistic link function (\text{logit}($\pi_i$)), which comprises a linear combination of the intercept ($\alpha$) and the coefficients ($\beta_1$, $\beta_2$, $\beta_3$)) corresponding to the predictor variables such as pet ownership, age, and BMI status. These predictor variables are denoted as \text{race}_i, \text{region}_i, and \text{employ}_i, where $i$ indexes the individuals in the dataset.
+In this model, $y_i$ represents the binary outcome variable indicating whether an individual is experiencing depression. The likelihood of depression ($\pi_i$) is captured through a logistic link function (\text{logit}($\pi_i$)), which comprises a linear combination of the intercept ($\alpha$) and the coefficients ($\beta_1$, $\beta_2$, $\beta_3$) corresponding to the predictor variables such as pet ownership, age, and BMI status. These predictor variables are denoted as \text{pet ownership}_i, \text{age}_i, and \text{BMI status}_i, where $i$ indexes the individuals in the dataset.
 
 Informative prior distributions are assigned to the intercept ($\alpha$) and coefficients ($\beta_1$, $\beta_2$, $\beta_3$) to regularize the model. More specifically, we use a normal distribution with a mean of 0 and a standard deviation of 2.5 for each parameter. Additionally, enabling parameter autoscaling is employed to enhance the model's performance.
 
@@ -368,7 +368,18 @@ In a U.S. research study, approximately 86% of pet owners reported that their pe
 
 ## Relationship between Physical Health and Depression
 
+Our analysis highlights that underweight people are more likely to be depressed compared to normal weight people, while overweight and obese people are more likely to be un-depressed.
+
+Some studies indicate that the greater the extreme values of the body mass index (BMI), whether very high or very low, the higher the risk of experiencing depressive symptoms [@Badillo_Khatib_Kahar_Khanna_2022]. Obesity affects parts of the brain that influence emotions. When individuals are feeling down, lack of energy and motivation may lead to a decrease in daily activities and exercise, which could contribute to weight gain, creating a vicious cycle. People with low body weight may be experiencing a certain illness or have anorexia nervosa, leading to insufficient food intake. Food can provide emotional comfort and enjoyment, and insufficient food intake or the mental burden caused by anorexia nervosa can affect mood, making people irritable, prone to anger, and anxious, thus increasing the risk of depression.
+
+However, some studies suggest that obesity only becomes a risk factor for depression in cases of severe depressive relapse, and there is no association between these two factors in adolescent samples [@Blasco_2020]. This may also due to the reason that obese individuals tend to enjoy food more. They can derive pleasure from eating, leading to increased dopamine release and feeling happier, reducing the likelihood of depression onset.
+
+Both extreme values of BMI are not ideal and can impact people's daily lives. Depression may result from a combination of genetic and/or biological factors, but environmental factors can also trigger depressive episodes [@Badillo_Khatib_Kahar_Khanna_2022]. Maintaining a healthy lifestyle, appropriate weight, and regular and balanced diet are essential to reduce the onset of depression.
+
+
 ## Third discussion point
+
+
 
 ## Weaknesses and future steps
 

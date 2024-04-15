@@ -23,7 +23,7 @@ analysis_data$age_group <- factor(analysis_data$age_group)
 analysis_data$bmi_status <- factor(analysis_data$bmi_status)
 
 # Create depression_status variable in binary form
-analysis_data$depression_status_binary <- ifelse(analysis_data$depression_status == "depressed", 0, 1)
+analysis_data$depression_status_binary <- ifelse(analysis_data$depression_status == "non-depressed", 1, 0)
 
 # Check the class and number of observations are as expected
 test_file("scripts/05-test_class.R")
