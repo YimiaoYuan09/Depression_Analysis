@@ -24,6 +24,10 @@ library(haven)
 library(knitr)
 library(arrow)
 library(kableExtra)
+library(rstanarm)
+library(modelsummary)
+library(ggplot2)
+library(marginaleffects)
 ```
 
 
@@ -311,7 +315,7 @@ We expect a positive relationship between the size of the wings and time spent a
 
 We can use maths by including latex between dollar signs, for instance $\theta$.
 
-...........todo...........
+
 
 
 ## Model Implication
@@ -374,16 +378,29 @@ Some studies indicate that the greater the extreme values of the body mass index
 
 However, some studies suggest that obesity only becomes a risk factor for depression in cases of severe depressive relapse, and there is no association between these two factors in adolescent samples [@Blasco_2020]. This may also due to the reason that obese individuals tend to enjoy food more. They can derive pleasure from eating, leading to increased dopamine release and feeling happier, reducing the likelihood of depression onset.
 
-Both extreme values of BMI are not ideal and can impact people's daily lives. Depression may result from a combination of genetic and/or biological factors, but environmental factors can also trigger depressive episodes [@Badillo_Khatib_Kahar_Khanna_2022]. Maintaining a healthy lifestyle, appropriate weight, and regular and balanced diet are essential to reduce the onset of depression.
+Both extreme values of BMI are not ideal and can impact people's daily lives. Depression may result from a combination of genetic and/or biological factors, but environmental factors can also trigger depressive episodes [@Badillo_Khatib_Kahar_Khanna_2022]. Maintaining a healthy lifestyle, appropriate weight, and regular and balanced diet are essential to reduce the probability of depression.
 
 
-## Third discussion point
+## Age Depression Connection
+
+There is evidence that some natural body changes associated with aging may increase a person’s risk of experiencing depression. Recent studies suggest that lower concentrations of folate in the blood and nervous system may contribute to depression, mental impairment, and dementia [@Silk_2022]. Our model shows that the risk of depression increases with age. However, individuals over the age of 56 are more likely to be non-depressed.
+
+In a study conducted among adolescents in Bangladesh, it was found that among the 563 students aged 13-18, the prevalence of moderate to severe depression was 26.5% [@Islam_2021]. Adolescence is a transitional period from childhood to adulthood, and a variety of physical, mental, and environmental changes can have an impact on their mental health. Adolescents face pressures from various aspects, including academic stress, conflicts with family or friends, being bullied in school or online, significant events or changes in their surroundings, all of which may cause depression. In addition, some parents may excessively prioritize their children's academic performance without caring about their mental health, arranging all kinds of tutoring classes and after-school homework, thus depriving these teenagers of time to relax and sleep, while also lacking an outlet for emotional release. 
+
+As these factors persistently impact an individual, the likelihood of developing depression significantly increases. Furthermore, when some teenagers communicate with their families about their depression, parents not only do not pay attention to it, but also think that it is an excuse to avoid studying. The lack of understanding and treatment can exacerbate the depression and ultimately lead to irreversible consequences.
+
+As people age, middle-aged people enter a busy and depressing stage. They need to struggle for their jobs while also taking care of their parents and maintaining family's living expenses. Activities such as chauffeuring children, doing laundry, and cooking become routine for many people. Financial stress, feelings of confusion and anxiety, and a gradually declining physical condition can all contribute to depression.
+
+Compared to middle-aged people, the life of elderly people are relatively relax but can also be monotonous. Lack of companionship and physical ailments are the main causes of depression among the elderly. They are often anxious in their free time and feel they may be a burden to their children.
 
 
+## Weaknesses and Future Steps
 
-## Weaknesses and future steps
+One weakness is that the primary dataset has limitations. The sample size is small, and participants may have recall biases when reporting information. The study population was drawn from a township in Dhaka Metropolitan area, so the results may not be generalizable to other urban or rural areas. In addition, during data collection, some participants may try to hide their depression status, leading to potential biases in the data compared to the actual situation.
 
-Weaknesses and next steps should also be included.
+Furthermore, our study establish correlation rather than causation. Since we only controlled for a few variables related to depression status, our results may lack essential variables, leading to omitted variable bias. For example, factors such as medication treatment and control, family understanding and companionship, and mood during questionnaire completion were not considered in the model but could potentially influence the final PHQ-9 score and depression status determination.
+
+For future studies, we can incorporate more social factors, such as family perceptions, medication usage, and geographical regions, which are associated with depression status. Also, we can refine the grouping of each factor for more in-depth and detailed exploration and research. In addition, we should increase the sample size and collect data from people who from various areas and different environments to avoid sample bias. In order to infer causality, future research should adopt advanced methods and models to address selection bias and heterogeneity treatment bias.
 
 
 \newpage
@@ -413,18 +430,42 @@ In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. Th
 #| fig-cap: "Examining how the model fits, and is affected by, the data"
 #| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
 
+# pp_check(depression_model) +
+#   theme_classic() +
+#   theme(legend.position = "bottom")
+```
+
+```{r}
+#| label: fig-post_dist
+#| fig-cap: Posterior distribution for logistic regression model 
+#| echo: false
+#| warning: false
+#| message: false
+
 pp_check(depression_model) +
   theme_classic() +
   theme(legend.position = "bottom")
-
-# posterior_vs_prior(depression_model) +
-#   theme_minimal() +
-#   scale_color_brewer(palette = "Set1") +
-#   theme(legend.position = "bottom") +
-#   coord_flip()
 ```
 
+
+```{r}
+#| label: fig-post_prior
+#| fig-cap: Comparing the posterior with the prior 
+#| echo: false
+#| warning: false
+#| message: false
+
+posterior_vs_prior(depression_model) +
+  theme_minimal() +
+  scale_color_brewer(palette = "Set1") +
+  theme(legend.position = "bottom") +
+  coord_flip()
+```
+
+
 ## Diagnostics
+
+## Markov chain Monte Carlo Convergence Check
 
 @fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
 
@@ -445,6 +486,34 @@ plot(depression_model, "trace")
 plot(depression_model, "rhat")
 ```
 
+## Credibility Interval {#sec-credibility-interval}
+
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: fig-modelresults1
+#| fig-cap: "Credible intervals for predictors of support for Biden"
+
+modelplot(depression_model, conf_level = 0.90, size = 0.2) +
+  labs(x = "90% credibility interval")
+```
+
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: fig-modelresults2
+#| fig-cap: "Credible intervals for predictors of support for Biden with x_axis limits"
+# Create the model plot
+model_plot <- modelplot(depression_model, conf_level = 0.9, , size = 0.2)
+
+# Modify the x-axis limits
+model_plot + xlim(-5, 5) +  # Adjust the limits as needed
+  labs(x = "90% Credibility Interval")
+```
 
 
 \newpage
