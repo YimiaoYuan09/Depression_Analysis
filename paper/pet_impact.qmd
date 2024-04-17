@@ -432,9 +432,7 @@ Other variables in the primary dataset:
 
 ## Posterior Predictive Check
 
-In @fig-post_dist we implement a posterior predictive check. This shows...
-
-In @fig-post_prior we compare the posterior with the prior. This shows... 
+In @fig-post_dist, we implement a posterior predictive check. This compares the actual depression status of individuals with simulations from the posterior distribution through our logistic regression model. In this graph, we can see that the differences between the posterior distribution and actual data are minimal, indicating that the model is doing a good job of fitting the data and accurately captures the observed data patterns. Therefore, the posterior is able to generate simulated data that closely resembles the actual data [@gelman2020bayesian], which indicates that our logistic regression model effectively represents people's actual depression status.
 
 ```{r}
 #| label: fig-post_dist
@@ -476,13 +474,17 @@ posterior_vs_prior(depression_model) +
   coord_flip()
 ```
 
+In @fig-post_prior, we compare the posterior with the prior. We can see that majority of the model parameters do not change once data are taken into account. This suggests that the observed data aligns with our initial beliefs and expectations regarding people's depression status. However, for the "age_group Greater than 56 years" parameter, there is a shift in the posterior distribution compared to the prior distribution after we input the observed data. This may suggest that the observed data for the "age_group Greater than 56 years" contradicts our initial assumptions. Since the percentage of the "greater than 56 years" age group in our dataset is only 0.71% (as shown in @tbl-summary, 2 out of 280), this isn't a major concern.
+
 
 ## Markov Chain Monte Carlo Convergence Check
 
-Checking the convergence of the MCMC algorithm
-@fig-trace-1 and @fig-trace-2 is a trace plot. It shows... This suggests...
+Trace plot and Rhat plot are used to check the convergence of the MCMC algorithm. 
 
-@fig-rhat is a Rhat plot. It shows... This suggests...
+@fig-trace-1 and @fig-trace-2 are the trace plot of the model. It indicates whether there are signs of operational issues with our model. We observe that the lines are horizontal, oscillating, and have a nice overlap between the chains. The trace plot does not suggest anything out of the ordinary.
+
+
+@fig-rhat is the Rhat plot of the model. We can observe that everything is close to 1, and no more than 1.05, indicating that it does not suggest any problems.
 
 ```{r}
 #| echo: false
