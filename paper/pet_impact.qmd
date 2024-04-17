@@ -31,6 +31,8 @@ library(marginaleffects)
 ```
 
 
+\newpage
+
 # Introduction
 
 You can and should cross-reference sections and sub-sections. We use @citeR and @rohan.
@@ -42,7 +44,7 @@ The remainder of this paper is structured as follows. @sec-data....
 # Data {#sec-data}
 
 ## Data Source
-In this report, I use data from a cross-sectional study of pet owners and non-pet owners in Bangladesh in 2020 as the primary dataset. The dataset uses both online and offline methods to collect data. The questionnaire was divided into two main sections including socio-demographic questions and depression assessment. The first section asked participants about their place of residence, age, gender, height, weight, lifestyle habits, pet ownership and other questions. The second part used the Patient Health Questionnaire 9 (PHQ-9) depression scale to measure depression. The PHQ-9 is scored according to the Primary Care Evaluation of Mental Disorders Patient Health Questionnaire (PRIME-MD PHQ), and is a reliable and accurate measure of the severity and significance of depression. A total of 280 responses were recorded in the dataset, including 140 pet owners and 140 non-pet owners.
+In this report, I use data from a cross-sectional study of pet owners and non-pet owners in Bangladesh in 2020 as the primary dataset [@Chakma_2021]. The dataset uses both online and offline methods to collect data. The questionnaire was divided into two main sections including socio-demographic questions and depression assessment. The first section asked participants about their place of residence, age, gender, height, weight, lifestyle habits, pet ownership and other questions. The second part used the Patient Health Questionnaire 9 (PHQ-9) depression scale to measure depression. The PHQ-9 is scored according to the Primary Care Evaluation of Mental Disorders Patient Health Questionnaire (PRIME-MD PHQ), and is a reliable and accurate measure of the severity and significance of depression. A total of 280 responses were recorded in the dataset, including 140 pet owners and 140 non-pet owners.
 
 ## Features
 The original pet owners and non-pet owners dataset, which shows in @tbl-raw, contains 280 responses and 19 variables. We choose to use these 6 variables: "Group", "Agegroup", "Gender", "BMIStatus", "Depressionstatus" and "Typeofpet" in our analysis. Information about other variables is shown in the Appendix @sec-data-details.
@@ -82,7 +84,10 @@ raw_pet_data[1:5, 16:19] |>
 ```
 
 ## Data Measurement
-.............Todo..........
+
+Since the data was collected through self-reported questionnaires, the measurement accuracy of variables may be influenced by various external factors. Among the six variables we selected, "age group", "BMI status", and "depression status" are susceptible to external factors that could result in inaccurate data.
+
+The survey was conducted through both online and offline methods. During face-to-face interviews, individuals, especially women, may wish to hide their true age. Similarly, when filling out online surveys, some people may choose to fill out the wrong weight because they are not happy with their real weight. In addition, some individuals may be reluctant to disclose their depression status and may intentionally select opposite choices when filling out the questionnaire. As a result, these inconsistencies may introduce bias and errors into our data, impacting the accuracy of our analysis.
 
 
 ## Methodology
@@ -292,6 +297,8 @@ In terms of BMI status, we expect a negative relationship between underweight, o
 
 
 # Results
+
+## Model Results
 
 ```{r}
 #| echo: false
