@@ -45,45 +45,18 @@ The remainder of this paper is structured as follows. @sec-data....
 In this report, I use data from a cross-sectional study of pet owners and non-pet owners in Bangladesh in 2020 as the primary dataset. The dataset uses both online and offline methods to collect data. The questionnaire was divided into two main sections including socio-demographic questions and depression assessment. The first section asked participants about their place of residence, age, gender, height, weight, lifestyle habits, pet ownership and other questions. The second part used the Patient Health Questionnaire 9 (PHQ-9) depression scale to measure depression. The PHQ-9 is scored according to the Primary Care Evaluation of Mental Disorders Patient Health Questionnaire (PRIME-MD PHQ), and is a reliable and accurate measure of the severity and significance of depression. A total of 280 responses were recorded in the dataset, including 140 pet owners and 140 non-pet owners.
 
 ## Features
-The original pet owners and non-pet owners dataset, which shows in @tbl-raw, contains 280 responses and 19 variables.
+The original pet owners and non-pet owners dataset, which shows in @tbl-raw, contains 280 responses and 19 variables. We choose to use these 6 variables: "Group", "Agegroup", "Gender", "BMIStatus", "Depressionstatus" and "Typeofpet" in our analysis. Information about other variables is shown in the Appendix @sec-data-details.
 
-1. id: the sequential serial number.
+1. Group: the group of the respondent; numeric numbers starting from 0 correspond to options "Pet Owners" and "Non-Pet Owners" respectively.
 
-2. Group: the group of the respondent; numeric numbers starting from 0 correspond to options "Pet Owners" and "Non-Pet Owners" respectively.
+2. Agegroup: the age group of the respondent; numeric numbers starting from 0 correspond to options "Less than 15 Years", "15-25 Years", "26-35 Years", "36-45 Years", "46-55 Years", and "Greater than 56 Years", respectively.
 
-3. Agegroup: the age group of the respondent; numeric numbers starting from 0 correspond to options "Less than 15 Years", "15-25 Years", "26-35 Years", "36-45 Years", "46-55 Years", and "Greater than 56 Years", respectively.
+3. BMIStatus: the nutritional status of the respondent based on Body Mass Index (BMI); numeric numbers starting from 0 correspond to options "Under Weight", "Normal Weight", "Over Weight", and "Obese", respectively.
 
-4. Gender: the gender of the respondent; numeric numbers starting from 0 correspond to options "Male" and "Female" respectively.
+4. Depressionstatus: the depression status of the respondent; numeric numbers starting from 0 correspond to options "Depressed" and "Non-depressed" respectively.
 
-5. Marital: the marital status of the respondent; numeric numbers starting from 0 correspond to options "Married", "Unmarried", "Divorced", and "Widowed", respectively.
+5. Typeofpet: the type of pets owned by respondent; numeric numbers starting from 0 correspond to options "Dog", "Cat", "Bird", "Rabbit", "Dog and Cat", "Dog and Bird", "Dog, Cat, Bird and Rabbit", "Cat and Bird", "Cat, Bird and Rabbit", "Bird and Rabbit", and "Others", respectively.
 
-6. BMIStatus: the nutritional status of the respondent based on Body Mass Index (BMI); numeric numbers starting from 0 correspond to options "Under Weight", "Normal Weight", "Over Weight", and "Obese", respectively.
-
-7. IncomeGroup: the respondent's average monthly family income in Bangladeshi Taka (BDT); numeric numbers starting from 0 correspond to options "Less than 60000 BDT" and "Greater than 60000 BDT" respectively.
-
-8. Occupation: the respondent's occupation; numeric numbers starting from 0 correspond to options "Job Holder", "Business", "Homemaker", and "Others", respectively.
-
-9. Religion: the respondent's religion; numeric numbers starting from 0 correspond to options "Islam" and "Others" respectively.
-
-10. Education: the education level of the respondent; numeric numbers starting from 0 correspond to options "Greater than 12 Years Schooling" and "Less than 12 Years Schooling" respectively.
-
-11. Tobacco: whether the respondent is a smoker; numeric numbers starting from 0 correspond to options "Yes" and "No" respectively.
-
-12. Alcohol: whether the respondent drinks alcohol; numeric numbers starting from 0 correspond to options "Yes" and "No" respectively.
-
-13. Disability: the physical disability status of the respondent; numeric numbers starting from 0 correspond to options "Yes" and "No" respectively.
-
-14. phqtotal: the total PHQ-9 Score of the respondent.
-
-15. Depressionstatus: the depression status of the respondent; numeric numbers starting from 0 correspond to options "Depressed" and "Non-depressed" respectively.
-
-16. DifficultyofWorking: the respondent's difficulty in working, taking care of things or getting along with people with respect to PHQ-9 responses; numeric numbers starting from 0 correspond to options "Difficult" and "Not Difficult" respectively.
-
-17. Typeofpet: the type of pets owned by respondent; numeric numbers starting from 0 correspond to options "Dog", "Cat", "Bird", "Rabbit", "Dog and Cat", "Dog and Bird", "Dog, Cat, Bird and Rabbit", "Cat and Bird", "Cat, Bird and Rabbit", "Bird and Rabbit", and "Others", respectively.
-
-18. MonthGroupofhavingPets: the amount of time pet owners spend living with their pets; numeric numbers starting from 0 correspond to options "Less than 75 Months" and "Greater than 75 Months" respectively.
-
-19. Purposeofpets: the purpose of pet owners living with their pets; numeric numbers starting from 0 correspond to options "Companion/Friend" and "Others" respectively.
 
 ```{r}
 #| include: false
@@ -286,7 +259,7 @@ pet_data |>
 
 # Model
 
-## Model set-up
+## Model Set-up
 
 In this report, we use the Bayesian logistic regression model to analysis and examine the relationship between depression status and pet ownership, along with various demographic factors. The model is formulated as follows:
 
@@ -311,15 +284,22 @@ We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use
 
 ## Model Justification
 
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
+We expect a positive relationship between pet ownership and depression status, which means that pet owners are more likely to be non-depressed than non-pet owners. Pet owners spend a lot of time with and caring for their pets every day, including going out for walks, eating, drinking and taking medication. These trivial things can fill the gaps in life and prevent people from ruminating in their free time. At the same time, the soft touch and companionship of a pet can relieve stress and reduce negative emotions. Pets will also provide some daily exercise to help pet owners maintain a healthy body. People without pets may choose to play games, catch up on TV shows and other activities in their free time, but pet owners are more likely to choose some relatively healthy activities. The presence of pets gives people something to hold on to and rely on in their lives, and will make them more energized and motivated.
 
-We can use maths by including latex between dollar signs, for instance $\theta$.
+Conversely, we anticipate that there is a negative correlation between age and depression. We predict that compared to teenagers and the elderly, middle-aged people are more likely to experience depression. As age increases, people are under more pressure and have more things to consider, along with more responsibilities. Unlike childhood, where children freely shares their thoughts, middle-aged people tend to remain silent. Complex interpersonal relationships and pressure from different aspects increase the incidence of depression.
 
-
+In terms of BMI status, we expect a negative relationship between underweight, overweight, and obesity and non-depressed status. This expectation arises from different lifestyles at different weights. People at extreme weights usually suffer from some physical or mental illness compared to normal people. These illnesses lead to lifestyle changes, such as reduced outdoor activities and lack of exercise. These factors negatively impact one's emotions, increasing the risk of depression. Overweight people may focus on managing their body weight. Due to large weight base, they may choose more unhealthy dieting methods to achieve weight loss goals, which can trigger eating disorders and further increase the risk of depression.
 
 
 ## Model Implication
-..........todo.................
+
+For the posterior predictive checks in @fig-post_dist, the great fit between the posterior distribution of our logistic regression model and the actual depression status data indicates that we accurately captured the depressive patterns. This suggests that our model's predictions of whether individuals are likely to be depressed are accurate.
+
+@fig-post_prior compares the posterior with the prior, which shows that besides the parameter "age_groupGreater than 56 years", the changes in other parameters are minimal. Due to the low representation of "age_groupGreater than 56 years" in the dataset, the difference in the "age_group Greater than 56 years" parameter is not significant.
+
+In the trace plot (@fig-trace-1 and @fig-trace-2), there are no indications of any anomalies. From the Rhat plot (@fig-rhat), we can see that all data points are close to 1 and do not exceed 1.05, indicating good convergence of the Markov chain Monte Carlo for our model.
+
+More detailed explanation can be found in Appendix @sec-model-details.
 
 
 # Results
@@ -409,31 +389,44 @@ For future studies, we can incorporate more social factors, such as family perce
 
 # Appendix {-}
 
+# Additional data details {#sec-data-details}
 
-# Additional data details
+Other variables in the primary dataset:
+
+1. id: the sequential serial number.
+
+2. Marital: the marital status of the respondent; numeric numbers starting from 0 correspond to options "Married", "Unmarried", "Divorced", and "Widowed", respectively.
+
+3. IncomeGroup: the respondent's average monthly family income in Bangladeshi Taka (BDT); numeric numbers starting from 0 correspond to options "Less than 60000 BDT" and "Greater than 60000 BDT" respectively.
+
+4. Occupation: the respondent's occupation; numeric numbers starting from 0 correspond to options "Job Holder", "Business", "Homemaker", and "Others", respectively.
+
+5. Religion: the respondent's religion; numeric numbers starting from 0 correspond to options "Islam" and "Others" respectively.
+
+6. Education: the education level of the respondent; numeric numbers starting from 0 correspond to options "Greater than 12 Years Schooling" and "Less than 12 Years Schooling" respectively.
+
+7. Tobacco: whether the respondent is a smoker; numeric numbers starting from 0 correspond to options "Yes" and "No" respectively.
+
+8. Alcohol: whether the respondent drinks alcohol; numeric numbers starting from 0 correspond to options "Yes" and "No" respectively.
+
+9. Disability: the physical disability status of the respondent; numeric numbers starting from 0 correspond to options "Yes" and "No" respectively.
+
+10. phqtotal: the total PHQ-9 Score of the respondent.
+
+11. DifficultyofWorking: the respondent's difficulty in working, taking care of things or getting along with people with respect to PHQ-9 responses; numeric numbers starting from 0 correspond to options "Difficult" and "Not Difficult" respectively.
+
+12. MonthGroupofhavingPets: the amount of time pet owners spend living with their pets; numeric numbers starting from 0 correspond to options "Less than 75 Months" and "Greater than 75 Months" respectively.
+
+13. Purposeofpets: the purpose of pet owners living with their pets; numeric numbers starting from 0 correspond to options "Companion/Friend" and "Others" respectively.
+
 
 # Model details {#sec-model-details}
 
-## Posterior predictive check
+## Posterior Predictive Check
 
-In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows...
+In @fig-post_dist we implement a posterior predictive check. This shows...
 
-In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
-
-```{r}
-#| eval: true
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-ppcheckandposteriorvsprior
-#| layout-ncol: 2
-#| fig-cap: "Examining how the model fits, and is affected by, the data"
-#| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
-
-# pp_check(depression_model) +
-#   theme_classic() +
-#   theme(legend.position = "bottom")
-```
+In @fig-post_prior we compare the posterior with the prior. This shows... 
 
 ```{r}
 #| label: fig-post_dist
@@ -455,36 +448,79 @@ pp_check(depression_model) +
 #| warning: false
 #| message: false
 
+#### Read data ####
+analysis_data <- read_parquet(here("data/analysis_data/clean_pet_data.parquet"))
+
+# Convert variables to factors
+analysis_data$pet_group <- factor(analysis_data$pet_group)
+analysis_data$age_group <- factor(analysis_data$age_group)
+analysis_data$bmi_status <- factor(analysis_data$bmi_status)
+
+# Create depression_status variable in binary form
+analysis_data$depression_status_binary <- ifelse(analysis_data$depression_status == "non-depressed", 1, 0)
+
 posterior_vs_prior(depression_model) +
   theme_minimal() +
   scale_color_brewer(palette = "Set1") +
   theme(legend.position = "bottom") +
+  theme(axis.text.x=element_text(hjust=1, vjust=0.5),
+        text=element_text(size=7)) +
   coord_flip()
 ```
 
 
-## Diagnostics
+## Markov Chain Monte Carlo Convergence Check
 
-## Markov chain Monte Carlo Convergence Check
+Checking the convergence of the MCMC algorithm
+@fig-trace-1 and @fig-trace-2 is a trace plot. It shows... This suggests...
 
-@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
-
-@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
+@fig-rhat is a Rhat plot. It shows... This suggests...
 
 ```{r}
 #| echo: false
 #| eval: true
 #| message: false
 #| warning: false
-#| label: fig-stanareyouokay
-#| fig-cap: "Checking the convergence of the MCMC algorithm"
-#| fig-subcap: ["Trace plot", "Rhat plot"]
+#| label: fig-trace-1
+#| fig-cap: "Trace plot of intercept, pet group and bmi status"
+#| fig-subcap: ["Trace plot of Intercept", "Trace plot of pet_group Pet Owners", "Trace plot of bmi_status Obese", "Trace plot of bmi_status Over Weight", "Trace plot of bmi_status Under Weight"]
 #| layout-ncol: 2
 
-plot(depression_model, "trace")
+plot(depression_model, "trace", "(Intercept)")
+plot(depression_model, "trace", "pet_grouppet owners")
+plot(depression_model, "trace", "bmi_statusobese")
+plot(depression_model, "trace", "bmi_statusover weight")
+plot(depression_model, "trace", "bmi_statusunder weight")
+```
+
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: fig-trace-2
+#| fig-cap: "Trace plot of age group"
+#| fig-subcap: ["Trace plot of age_group 26-35 years", "Trace plot of age_group 36-45 years", "Trace plot of age_group 46-55 years", "Trace plot of age_group Greater than 56 years"]
+#| layout-ncol: 2
+
+plot(depression_model, "trace", "age_group26-35 years")
+plot(depression_model, "trace", "age_group36-45 years")
+plot(depression_model, "trace", "age_group46-55 years")
+plot(depression_model, "trace", "age_groupgreater than 56 years")
+```
+
+
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: fig-rhat
+#| fig-cap: "Rhat plot"
 
 plot(depression_model, "rhat")
 ```
+
 
 ## Credibility Interval {#sec-credibility-interval}
 
@@ -494,7 +530,7 @@ plot(depression_model, "rhat")
 #| warning: false
 #| message: false
 #| label: fig-modelresults1
-#| fig-cap: "Credible intervals for predictors of support for Biden"
+#| fig-cap: "Credible intervals for predictors of non-depression"
 
 modelplot(depression_model, conf_level = 0.90, size = 0.2) +
   labs(x = "90% credibility interval")
@@ -506,7 +542,8 @@ modelplot(depression_model, conf_level = 0.90, size = 0.2) +
 #| warning: false
 #| message: false
 #| label: fig-modelresults2
-#| fig-cap: "Credible intervals for predictors of support for Biden with x_axis limits"
+#| fig-cap: "Credible intervals for predictors of non-depression with x_axis limits"
+
 # Create the model plot
 model_plot <- modelplot(depression_model, conf_level = 0.9, , size = 0.2)
 
@@ -516,7 +553,12 @@ model_plot + xlim(-5, 5) +  # Adjust the limits as needed
 ```
 
 
+
+
+
+
 \newpage
+
 
 
 # References
