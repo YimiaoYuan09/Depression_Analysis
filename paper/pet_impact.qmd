@@ -291,20 +291,7 @@ Conversely, we anticipate that there is a negative correlation between age and d
 In terms of BMI status, we expect a negative relationship between underweight, overweight, and obesity and non-depressed status. This expectation arises from different lifestyles at different weights. People at extreme weights usually suffer from some physical or mental illness compared to normal people. These illnesses lead to lifestyle changes, such as reduced outdoor activities and lack of exercise. These factors negatively impact one's emotions, increasing the risk of depression. Overweight people may focus on managing their body weight. Due to large weight base, they may choose more unhealthy dieting methods to achieve weight loss goals, which can trigger eating disorders and further increase the risk of depression.
 
 
-## Model Implication
-
-For the posterior predictive checks in @fig-post_dist, the great fit between the posterior distribution of our logistic regression model and the actual depression status data indicates that we accurately captured the depressive patterns. This suggests that our model's predictions of whether individuals are likely to be depressed are accurate.
-
-@fig-post_prior compares the posterior with the prior, which shows that besides the parameter "age_groupGreater than 56 years", the changes in other parameters are minimal. Due to the low representation of "age_groupGreater than 56 years" in the dataset, the difference in the "age_group Greater than 56 years" parameter is not significant.
-
-In the trace plot (@fig-trace-1 and @fig-trace-2), there are no indications of any anomalies. From the Rhat plot (@fig-rhat), we can see that all data points are close to 1 and do not exceed 1.05, indicating good convergence of the Markov chain Monte Carlo for our model.
-
-More detailed explanation can be found in Appendix @sec-model-details.
-
-
 # Results
-
-Our results are summarized in @tbl-modelresults.
 
 ```{r}
 #| echo: false
@@ -327,14 +314,35 @@ depression_model <-
 
 modelsummary::modelsummary(
   list(
-    "Not Depressed" = depression_model
+    "Non Depressed" = depression_model
   ),
   statistic = "mad",
   fmt = 2
 )
 ```
 
+Our results are summarized in @tbl-modelresults. Our results generally matches our expectation. Our model excluded one variable from each category as the reference level: pet_group Non-pet Owners, age_group 15-25 years, and bmi_status Normal Weight. The intercept represents the estimated log-odds of being non-depressed when all other predictor variables are held constant at their reference levels. In this scenario, for people who are non-pet owners, aged between 15 and 25 years, and have a normal BMI, the estimated log-odds of being non-depressed is 0.70.
 
+People aged over 56 years are more likely to be non-depressed compared to other age groups. The estimated coefficient of 18.80 indicates that, holding all other variables constant, people who aged over 56 years are estimated to have a 18.80 unit increase in the log-odds of being non-depressed compared to the reference group. However, people in other age groups are more likely to experience depression, with coefficients ranging from -0.16 to -1.65.
+
+Having pets also affects the probability of non-depression. From the results, we can see that the coefficient for pet owners is 0.42, indicating that pets can help to reducing the likelihood of depression. However, this coefficient is not large, suggesting that the effect is moderate and not significant.
+
+The coefficients for BMI status are slightly different from our expectations. Using individuals with a normal weight as the reference level, the coefficients for overweight and obese individuals are 0.08 and 0.45, respectively, which is a little bit surprising. Positive coefficients indicate that the overweight or obese people are more likely to be non-depressed, contrary to our expectations. However, these values are small, indicating that the correlation is not very strong.
+
+@fig-modelresults1 (see @sec-credibility-interval) displays the range of coefficient estimates of our model within a 90% probability range. Since the credibility interval for age_group "Greater than 56 years" is particularly large, we are unable to observe trends in the 90% confidence intervals of other variables. Therefore, we created @fig-modelresults2 and restricted the x-axis to -5 to 5 to obtain clear results.
+
+Combining @fig-modelresults1 and @fig-modelresults2, we observe statistical significance for the coefficient estimates for individuals aged over 56 years and the intercept, non-pet owners between the ages of 15 and 25 who are of normal weight. Since the confidence interval does not cross 0, its estimate is significant. The estimates are in log-odds form, indicating that if the coefficient is positive, it means the person is not depressed, and if it is negative, the person is depressed.
+
+
+## Model Implication
+
+For the posterior predictive checks in @fig-post_dist, the great fit between the posterior distribution of our logistic regression model and the actual depression status data indicates that we accurately captured the depressive patterns. This suggests that our model's predictions of whether individuals are likely to be depressed are accurate.
+
+@fig-post_prior compares the posterior with the prior, which shows that besides the parameter "age_groupGreater than 56 years", the changes in other parameters are minimal. Due to the low representation of "age_groupGreater than 56 years" in the dataset, the difference in the "age_group Greater than 56 years" parameter is not significant.
+
+In the trace plot (@fig-trace-1 and @fig-trace-2), there are no indications of any anomalies. From the Rhat plot (@fig-rhat), we can see that all data points are close to 1 and do not exceed 1.05, indicating good convergence of the Markov chain Monte Carlo for our model.
+
+More detailed explanation can be found in Appendix @sec-model-details.
 
 
 # Discussion
@@ -464,7 +472,7 @@ posterior_vs_prior(depression_model) +
   scale_color_brewer(palette = "Set1") +
   theme(legend.position = "bottom") +
   theme(axis.text.x=element_text(hjust=1, vjust=0.5),
-        text=element_text(size=7)) +
+        text=element_text(size=8)) +
   coord_flip()
 ```
 
@@ -524,6 +532,8 @@ plot(depression_model, "rhat")
 
 ## Credibility Interval {#sec-credibility-interval}
 
+@fig-modelresults1 and @fig-modelresults2 shows the 90% credibility interval of the model.
+
 ```{r}
 #| echo: false
 #| eval: true
@@ -555,11 +565,7 @@ model_plot + xlim(-5, 5) +  # Adjust the limits as needed
 
 
 
-
-
-\newpage
-
-
+\clearpage
 
 # References
 
