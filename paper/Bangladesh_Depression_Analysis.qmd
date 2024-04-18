@@ -3,7 +3,7 @@ title: "Exploring the Impact of Pet Ownership, Age, and BMI Status on Depression
 subtitle: "An Analysis of Depression Status in Bangladesh in 2020"
 author: 
   - Yimiao Yuan
-thanks: "Code and data are available at: https://github.com/YimiaoYuan09/Pet_Ownership_Impact"
+thanks: "Code and data are available at: https://github.com/YimiaoYuan09/Depression_Analysis"
 date: today
 date-format: long
 abstract: "The paper examines the factors influencing depression in Bangladesh in 2020. Using dataset from US National Library of Medicine, we employ logistic regression analysis to explore the influence of individual's pet ownership, age, and BMI status on the depression status. We find that pet owners are less likely to experience depression. Younger and middle-aged individuals are more susceptible to depression compared to elderly. Underweight individuals have a higher risk of depression compared to overweight and obese individuals. These findings can provide additional methods and approaches for addressing and alleviating depression, as well as new insights and ideas for research and treatment of depression."
