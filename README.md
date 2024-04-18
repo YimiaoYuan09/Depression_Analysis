@@ -2,9 +2,7 @@
 
 ## Overview
 
-This repo provides students with a foundation for their own projects associated with *Telling Stories with Data*. You do not need every aspect for every paper and you should delete aspects that you do not need.
-
-To use this folder, click the green "Code" button", then "Download ZIP". Move the downloaded folder to where you want to work on your own computer, and then modify it to suit.
+The paper examines the factors influencing depression in Bangladesh in 2020. Using dataset from US National Library of Medicine, we employ logistic regression analysis to explore the influence of individual's pet ownership, age, and BMI status on the depression status. We find that pet owners are less likely to experience depression. Younger and middle-aged individuals are more susceptible to depression compared to elderly. Underweight individuals have a higher risk of depression compared to overweight and obese individuals. These findings can provide additional methods and approaches for addressing and alleviating depression, as well as new insights and ideas for research and treatment of depression.
 
 
 ## File Structure

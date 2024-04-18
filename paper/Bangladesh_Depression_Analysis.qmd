@@ -1,12 +1,12 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
+title: "Exploring the Impact of Pet Ownership, Age, and BMI Status on Depression"
+subtitle: "An Analysis of Depression Status in Bangladesh in 2020"
 author: 
   - Yimiao Yuan
 thanks: "Code and data are available at: https://github.com/YimiaoYuan09/Pet_Ownership_Impact"
 date: today
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "The paper examines the factors influencing depression in Bangladesh in 2020. Using dataset from US National Library of Medicine, we employ logistic regression analysis to explore the influence of individual's pet ownership, age, and BMI status on the depression status. We find that pet owners are less likely to experience depression. Younger and middle-aged individuals are more susceptible to depression compared to elderly. Underweight individuals have a higher risk of depression compared to overweight and obese individuals. These findings can provide additional methods and approaches for addressing and alleviating depression, as well as new insights and ideas for research and treatment of depression."
 format: pdf
 toc: true
 number-sections: true
@@ -28,6 +28,8 @@ library(rstanarm)
 library(modelsummary)
 library(ggplot2)
 library(marginaleffects)
+library(tibble)
+library(margins)
 ```
 
 
@@ -35,19 +37,26 @@ library(marginaleffects)
 
 # Introduction
 
-You can and should cross-reference sections and sub-sections. We use @citeR and @rohan.
+According to estimates, 3.8% of the global population suffers from depression, with approximately 700,000 people dying from depression each year [@WHO_2023]. It can affect a person's ability to work, their relationships, and undermines their quality of life. Therefore, it is important to find the causes of depression and how various demographic, economic, and social factors may influence individuals' depression status. While there is a lot of research exploring the factors influencing depression, studies specific to Bangladesh are scarce. We analyzed the depression status data from Bangladesh in 2020, obtained from a cross-sectional comparative study provided by the US National Library of Medicine [@Chakma_2021]. We use the dataset from the study to establish a predictive model for individual depression status. This enabled us to discover how demographic and social factors influenced the depression status in 2020.
 
-The remainder of this paper is structured as follows. @sec-data....
+In this paper, we use a logistic regression model to predict depression status, as it is the optimal choice for predicting binary outcomes, such as depression status (depression or non-depression). The analysis focuses on estimating the likelihood of people being depressed or non-depressed, based on various factors captured in the dataset. We selected pet ownership, age, BMI status, and depression status from the dataset for analysis. 
 
+The estimand in this paper is the number of individuals who are depressed or non-depressed in reality. However, due to various reasons and difficulties, not all Bangladeshis will be assessed, making it challenging to measure the exact number of individuals who are depressed or non-depressed. Therefore, in this paper, we attempt to estimate the estimand using a logistic regression model trained with the 2020 depression status dataset from the US National Library of Medicine.
+
+The logistic regression model indicates that in Bangladesh in 2020, pet owners are more likely to be non-depressed. As age increases, people are more likely to experience depression. However, for those over 56 years old, they are less likely to be depressed. Additionally, individuals who are underweight have a higher risk of depression compared to those who are overweight or obese.
+
+The remainder of this paper is structured as follows. @sec-data displays the data used in the report, including tables and graphs to illustrate the statistical summaries and relationships between variables. @sec-model builds the model and discusses its justification and interpretation. @sec-result highlights the prediction results using tables and graphs. @sec-discussion contains discussions that conducted based on the findings, which addresses the depression status based on pet ownership, age, and BMI status.
+
+Statistical programming language R [@citeR] is used in this report, with packages `tidyverse` [@citeTidyverse], `here` [@citeHere], `rstanarm` [@rstanarm], `modelsummary` [@citeModleSummary], `ggplot2` [@citeGgplot2], `haven` [@citeHaven], `knitr` [@citeKnitr], `marginaleffects` [@citeMarginalEffects], `tibble` [@citeTibble], `margins` [@citeMargins], `testthat` [@citetestthat] and `kableExtra` [@citeKableExtra].
 
 
 # Data {#sec-data}
 
 ## Data Source
-In this report, I use data from a cross-sectional study of pet owners and non-pet owners in Bangladesh in 2020 as the primary dataset [@Chakma_2021]. The dataset uses both online and offline methods to collect data. The questionnaire was divided into two main sections including socio-demographic questions and depression assessment. The first section asked participants about their place of residence, age, gender, height, weight, lifestyle habits, pet ownership and other questions. The second part used the Patient Health Questionnaire 9 (PHQ-9) depression scale to measure depression. The PHQ-9 is scored according to the Primary Care Evaluation of Mental Disorders Patient Health Questionnaire (PRIME-MD PHQ), and is a reliable and accurate measure of the severity and significance of depression. A total of 280 responses were recorded in the dataset, including 140 pet owners and 140 non-pet owners.
+In this report, I use data from the 2020 Cross-Sectional Comparative Study of Depression in Bangladesh provided by the US National Library of Medicine as the primary dataset [@Chakma_2021]. The dataset uses both online and offline methods to collect data. The questionnaire was divided into two main sections including socio-demographic questions and depression assessment. The first section asked participants about their place of residence, age, gender, height, weight, lifestyle habits, pet ownership and other questions. The second part used the Patient Health Questionnaire 9 (PHQ-9) depression scale to measure depression. The PHQ-9 is scored according to the Primary Care Evaluation of Mental Disorders Patient Health Questionnaire (PRIME-MD PHQ), and is a reliable and accurate measure of the severity and significance of depression. A total of 280 responses were recorded in the dataset, including 140 pet owners and 140 non-pet owners.
 
 ## Features
-The original pet owners and non-pet owners dataset, which shows in @tbl-raw, contains 280 responses and 19 variables. We choose to use these 6 variables: "Group", "Agegroup", "Gender", "BMIStatus", "Depressionstatus" and "Typeofpet" in our analysis. Information about other variables is shown in the Appendix @sec-data-details.
+The original dataset, which shows in @tbl-raw, contains 280 responses and 19 variables. We choose to use these 6 variables: "Group", "Agegroup", "Gender", "BMIStatus", "Depressionstatus" and "Typeofpet" in our analysis. Information about other variables is shown in the Appendix @sec-data-details.
 
 1. Group: the group of the respondent; numeric numbers starting from 0 correspond to options "Pet Owners" and "Non-Pet Owners" respectively.
 
@@ -71,7 +80,7 @@ raw_pet_data <-  read_sav(here::here("data/raw_data/raw_data.sav"))
 
 ```{r}
 #| label: tbl-raw
-#| tbl-cap: "Preview of the raw pet owners and non-pet owners dataset"
+#| tbl-cap: "Preview of the raw depression status dataset"
 #| message: false
 #| echo: false
 
@@ -175,7 +184,7 @@ pet_data <-
 
 ```{r}
 #| label: tbl-clean-data
-#| tbl-cap: "Preview of the cleaned pet owners and non-pet owners dataset"
+#| tbl-cap: "Preview of the cleaned depression status dataset"
 #| message: false
 #| echo: false
 
@@ -186,7 +195,7 @@ pet_data[1:5, 1:6] |>
 
 ```{r}
 #| label: tbl-summary
-#| tbl-cap: "Statistics summary of the cleaned pet owners and non-pet owners dataset"
+#| tbl-cap: "Statistics summary of the cleaned depression status dataset"
 #| message: false
 #| echo: false
 
@@ -262,7 +271,7 @@ pet_data |>
 ```
 
 
-# Model
+# Model {#sec-model}
 
 ## Model Set-up
 
@@ -296,7 +305,7 @@ Conversely, we anticipate that there is a negative correlation between age and d
 In terms of BMI status, we expect a negative relationship between underweight, overweight, and obesity and non-depressed status. This expectation arises from different lifestyles at different weights. People at extreme weights usually suffer from some physical or mental illness compared to normal people. These illnesses lead to lifestyle changes, such as reduced outdoor activities and lack of exercise. These factors negatively impact one's emotions, increasing the risk of depression. Overweight people may focus on managing their body weight. Due to large weight base, they may choose more unhealthy dieting methods to achieve weight loss goals, which can trigger eating disorders and further increase the risk of depression.
 
 
-# Results
+# Results {#sec-result}
 
 ## Model Results
 
@@ -352,7 +361,7 @@ In the trace plot (@fig-trace-1 and @fig-trace-2), there are no indications of a
 More detailed explanation can be found in Appendix @sec-model-details.
 
 
-# Discussion
+# Discussion {#sec-discussion}
 
 ## Influence of Pet Ownership on Mental Health
 
